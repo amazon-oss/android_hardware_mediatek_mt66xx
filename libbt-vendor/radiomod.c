@@ -187,6 +187,12 @@ static BOOL GORMcmd_HCC_Get_Local_BD_Addr(HC_BT_HDR *p_cmd)
     uint8_t *p, ret;
     wOpCode = 0x1009;
 
+    /* if we already have a BD address set, skip this command */
+    if (!is_memzero(btinit->bt_nvram.fields.addr, BD_ADDR_LEN)) {
+        LOG_WAN("Skip Get_Local_BD_Addr since we already have a valid address\n");
+        return TRUE;
+    }
+
     p_cmd->len = 3;
     p = (uint8_t *)(p_cmd + 1);
     UINT16_TO_STREAM(p, wOpCode);
