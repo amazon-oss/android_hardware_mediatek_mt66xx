@@ -100,7 +100,7 @@ static int bt_get_combo_id(unsigned int *pChipId)
     char chipId_val[PROPERTY_VALUE_MAX];
 
     do {
-        if (property_get("persist.mtk.wcn.combo.chipid", chipId_val, NULL) &&
+        if (property_get("persist.vendor.connsys.chipid", chipId_val, NULL) &&
             0 != strcmp(chipId_val, "-1")) {
             *pChipId = (unsigned int)strtoul(chipId_val, NULL, 16);
             break;
