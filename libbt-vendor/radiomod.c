@@ -187,12 +187,6 @@ static BOOL GORMcmd_HCC_Get_Local_BD_Addr(HC_BT_HDR *p_cmd)
     uint8_t *p, ret;
     wOpCode = 0x1009;
 
-    /* if we already have a BD address set, skip this command */
-    if (!is_memzero(btinit->bt_nvram.fields.addr, BD_ADDR_LEN)) {
-        LOG_WAN("Skip Get_Local_BD_Addr since we already have a valid address\n");
-        return TRUE;
-    }
-
     p_cmd->len = 3;
     p = (uint8_t *)(p_cmd + 1);
     UINT16_TO_STREAM(p, wOpCode);
@@ -249,7 +243,15 @@ static VOID GORMevt_HCE_Get_Local_BD_Addr(VOID *p_evt)
     LOG_WAN("Retrieve eFUSE address: %02x-%02x-%02x-%02x-%02x-%02x\n",
             ucBDAddr[0], ucBDAddr[1], ucBDAddr[2], ucBDAddr[3], ucBDAddr[4], ucBDAddr[5]);
 
-    memcpy(btinit->bt_nvram.fields.addr, ucBDAddr, 6);
+    /* if we already have a BD address set, don't override it. */
+    if (is_memzero(btinit->bt_nvram.fields.addr, BD_ADDR_LEN)) {
+        memcpy(btinit->bt_nvram.fields.addr, ucBDAddr, 6);
+    } else {
+        LOG_WAN("Overriding it and using HAL provided address: %02x-%02x-%02x-%02x-%02x-%02x\n",
+                btinit->bt_nvram.fields.addr[0], btinit->bt_nvram.fields.addr[1],
+                btinit->bt_nvram.fields.addr[2], btinit->bt_nvram.fields.addr[3],
+                btinit->bt_nvram.fields.addr[4], btinit->bt_nvram.fields.addr[5]);
+    }
 
     if (bt_vnd_cbacks) {
         bt_vnd_cbacks->dealloc(p_buf);
