@@ -53,6 +53,7 @@ endif
 # Module definition
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := libbt-vendor
+LOCAL_PROPRIETARY_MODULE := true
 LOCAL_SHARED_LIBRARIES := liblog libcutils
 
 include $(BUILD_SHARED_LIBRARY)
