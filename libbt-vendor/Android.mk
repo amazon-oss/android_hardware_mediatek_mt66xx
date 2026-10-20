@@ -1,5 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
+ifneq ($(BOARD_MTK_BT_CHIP),)
+
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
@@ -57,3 +59,5 @@ LOCAL_PROPRIETARY_MODULE := true
 LOCAL_SHARED_LIBRARIES := liblog libcutils
 
 include $(BUILD_SHARED_LIBRARY)
+
+endif
